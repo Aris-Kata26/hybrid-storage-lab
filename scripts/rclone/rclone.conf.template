@@ -1,0 +1,12 @@
+[minio]
+type = s3
+provider = Minio
+env_auth = false
+access_key_id = MINIO_ACCESS_KEY
+secret_access_key = MINIO_SECRET_KEY
+endpoint = http://localhost:9000
+
+[azure]
+type = azureblob
+account = AZURE_STORAGE_ACCOUNT
+key = AZURE_STORAGE_KEY

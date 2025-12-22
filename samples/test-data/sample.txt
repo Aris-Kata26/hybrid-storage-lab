@@ -1,0 +1,5 @@
+This is a sample file for hybrid storage testing.
+
+Created for demonstrating sync between MinIO on-prem and Azure Blob primary storage.
+
+This file will be uploaded to MinIO, synced to Azure, then restored back to MinIO during the demo flow.
