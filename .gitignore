@@ -2,3 +2,7 @@
 *.key
 *.pem
 **/rclone.conf
+access_key_azure.txt
+access_key_*.txt
+*.txt.key
+github_token.txt
