@@ -29,4 +29,4 @@ MinIO (on-prem) ⇄ Azure Blob (primary)
 
 ### Diagram
 
-See `diagrams/architecture-v1.png` for visual representation.
+See `architecture-diagram.md` for the Mermaid diagram.

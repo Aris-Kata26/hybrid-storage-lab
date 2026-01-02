@@ -1,39 +1,93 @@
 # Hybrid Storage Lab: Azure Primary
 
-Professional hybrid storage solution with MinIO on-prem and Azure Blob as primary cloud storage.
+Professional hybrid storage solution with MinIO on‑prem and Azure Blob as the primary cloud. Reproducible in ~10 minutes.
 
 ## Architecture
 
-- On-prem: MinIO S3-compatible storage
+- On‑prem: MinIO (S3‑compatible)
 - Cloud: Azure Blob Storage (primary)
-- Sync: rclone for bidirectional synchronization
+- Sync: rclone (bidirectional)
 
-## Quick Start
+See the visual flow in `docs/architecture-diagram.md`.
 
-1. Start MinIO: `docker compose up -d`
-2. Configure Azure Storage Account and Container
-3. Set up rclone configuration
-4. Run sync scripts
+## 10‑Minute Quickstart (WSL/Linux)
+
+### Prerequisites
+
+- Docker + Docker Compose
+- Azure Storage Account + Container (e.g., `hybrid-storage-lab`)
+- rclone installed in your shell (WSL recommended on Windows)
+
+### Steps
+
+1) Start services
+
+```bash
+docker compose up -d
+```
+
+2) Install rclone (WSL/Ubuntu)
+
+```bash
+sudo -E apt update
+sudo -E apt install -y rclone
+```
+
+3) Configure rclone remotes
+
+Option A — use repo-local config:
+
+```bash
+cp scripts/rclone/rclone.conf.template scripts/rclone/rclone.conf
+export RCLONE_CONFIG="$PWD/scripts/rclone/rclone.conf"
+```
+
+Option B — use your user config:
+
+```bash
+mkdir -p ~/.config/rclone
+cp scripts/rclone/rclone.conf.template ~/.config/rclone/rclone.conf
+```
+
+Update the copied config with your Azure credentials and MinIO endpoint/access keys.
+
+4) Load sample data into MinIO
+
+```bash
+rclone copy samples/test-data minio:onprem-storage
+```
+
+5) Run the demo
+
+```bash
+./scripts/rclone/sync_to_azure.sh
+./scripts/rclone/verify.sh
+
+# Simulate deletion on-prem
+rclone deletefile "minio:onprem-storage/sample.txt"
+
+# Restore from Azure back to MinIO
+./scripts/rclone/sync_from_azure.sh
+./scripts/rclone/verify.sh
+```
 
 ## Documentation
 
-- [Architecture](docs/architecture.md)
-- [Local Setup](docs/setup-local.md)
-- [Azure Setup](docs/setup-azure.md)
-- [Demo](docs/demo.md)
-- [Security](docs/security.md)
+- `docs/architecture.md` — Overview
+- `docs/architecture-diagram.md` — Mermaid diagram
+- `docs/setup-local.md` — Local environment
+- `docs/setup-azure.md` — Azure setup
+- `docs/demo.md` — Full demo walkthrough
+- `docs/security.md` — Security baseline
+- `docs/session-report.md` — Session summary and results
 
 ## Scripts
 
-- `scripts/rclone/sync_to_azure.sh` - Sync from MinIO to Azure
-- `scripts/rclone/sync_from_azure.sh` - Restore from Azure to MinIO
-- `scripts/rclone/verify.sh` - Verify sync status
+- `scripts/rclone/sync_to_azure.sh` — Sync MinIO → Azure
+- `scripts/rclone/sync_from_azure.sh` — Restore Azure → MinIO
+- `scripts/rclone/verify.sh` — Verify object counts
 
-## Demo Flow
+Tips:
 
-1. Upload file to MinIO bucket
-2. Run sync to Azure
-3. Verify file in Azure
-4. Delete file from MinIO
-5. Run restore from Azure
-6. Verify file back in MinIO
+- Ensure `rclone` is on your PATH (`command -v rclone`).
+- Set `RCLONE_CONFIG` to use the repo-local config if preferred.
