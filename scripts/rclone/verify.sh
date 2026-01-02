@@ -1,8 +1,13 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-MINIO_BUCKET="onprem-storage"
-AZ_CONTAINER="hybrid-storage-lab"
+command -v rclone >/dev/null 2>&1 || {
+	echo "Error: rclone is not installed or not on PATH." >&2
+	exit 1
+}
+
+MINIO_BUCKET="${MINIO_BUCKET:-onprem-storage}"
+AZ_CONTAINER="${AZ_CONTAINER:-hybrid-storage-lab}"
 
 echo "MinIO objects:"
 rclone ls "minio:${MINIO_BUCKET}" | wc -l
